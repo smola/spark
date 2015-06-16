@@ -290,7 +290,7 @@ class Analyzer(
         val conflictingAttributes = left.outputSet.intersect(right.outputSet)
         logDebug(s"Conflicting attributes ${conflictingAttributes.mkString(",")} in $j")
 
-        val (oldRelation, newRelation) = right.collect {
+        right.collect {
           // Handle base relations that might appear more than once.
           case oldVersion: MultiInstanceRelation
               if oldVersion.outputSet.intersect(conflictingAttributes).nonEmpty =>
@@ -315,25 +315,20 @@ class Analyzer(
               if AttributeSet(windowExpressions.map(_.toAttribute)).intersect(conflictingAttributes)
                 .nonEmpty =>
             (oldVersion, oldVersion.copy(windowExpressions = newAliases(windowExpressions)))
-        }.headOption.getOrElse { // Only handle first case, others will be fixed on the next pass.
-          sys.error(
-            s"""
-              |Failure when resolving conflicting references in Join:
-              |$plan
-              |
-              |Conflicting attributes: ${conflictingAttributes.mkString(",")}
-              """.stripMargin)
+        }.headOption match {
+          // Only handle first case, others will be fixed on the next pass.
+          case None => j
+          case Some((oldRelation, newRelation)) =>
+            val attributeRewrites = AttributeMap(oldRelation.output.zip(newRelation.output))
+            val newRight = right transformUp {
+              case r if r == oldRelation => newRelation
+            } transformUp {
+              case other => other transformExpressions {
+                case a: Attribute => attributeRewrites.get(a).getOrElse(a)
+              }
+            }
+            j.copy(right = newRight)
         }
-
-        val attributeRewrites = AttributeMap(oldRelation.output.zip(newRelation.output))
-        val newRight = right transformUp {
-          case r if r == oldRelation => newRelation
-        } transformUp {
-          case other => other transformExpressions {
-            case a: Attribute => attributeRewrites.get(a).getOrElse(a)
-          }
-        }
-        j.copy(right = newRight)
 
       case q: LogicalPlan =>
         logTrace(s"Attempting to resolve ${q.simpleString}")
