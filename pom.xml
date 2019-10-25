@@ -124,7 +124,7 @@
     <hadoop.version>1.0.4</hadoop.version>
     <protobuf.version>2.4.1</protobuf.version>
     <yarn.version>${hadoop.version}</yarn.version>
-    <hbase.version>0.94.6</hbase.version>
+    <hbase.version>0.94.9</hbase.version>
     <flume.version>1.4.0</flume.version>
     <zookeeper.version>3.4.5</zookeeper.version>
     <hive.version>0.12.0</hive.version>
@@ -134,7 +134,7 @@
     <chill.version>0.3.6</chill.version>
     <codahale.metrics.version>3.0.0</codahale.metrics.version>
     <avro.version>1.7.6</avro.version>
-    <avro.mapred.classifier></avro.mapred.classifier>
+    <avro.mapred.classifier/>
     <jets3t.version>0.7.1</jets3t.version>
     <aws.java.sdk.version>1.8.3</aws.java.sdk.version>
     <aws.kinesis.client.version>1.1.0</aws.kinesis.client.version>
@@ -1156,7 +1156,7 @@
       <properties>
         <hadoop.version>1.0.3-mapr-3.0.3</hadoop.version>
         <yarn.version>2.3.0-mapr-4.0.0-FCS</yarn.version>
-        <hbase.version>0.94.17-mapr-1405</hbase.version>
+        <hbase.version>0.94.9</hbase.version>
         <zookeeper.version>3.4.5-mapr-1406</zookeeper.version>
       </properties>
     </profile>
@@ -1169,7 +1169,7 @@
       <properties>
         <hadoop.version>2.3.0-mapr-4.0.0-FCS</hadoop.version>
         <yarn.version>2.3.0-mapr-4.0.0-FCS</yarn.version>
-        <hbase.version>0.94.17-mapr-1405-4.0.0-FCS</hbase.version>
+        <hbase.version>0.94.9</hbase.version>
         <zookeeper.version>3.4.5-mapr-1406</zookeeper.version>
       </properties>
       <dependencies>
